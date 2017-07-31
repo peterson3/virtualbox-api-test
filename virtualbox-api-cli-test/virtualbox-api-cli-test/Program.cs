@@ -11,7 +11,7 @@ namespace virtualbox_api_cli_test
     {
         static void Main(string[] args)
         {
-            
+
             IVirtualBox vbox = new VirtualBox.VirtualBox();
             string menuChoice = "1";
 
@@ -51,8 +51,15 @@ namespace virtualbox_api_cli_test
                         Console.Write("Type Machine Name:");
                         string chosenMachineName = Console.ReadLine();
                         IMachine chosenMachine = vbox.FindMachine(chosenMachineName);
+                        Session session1 = new Session();
+                        session1.Name = "session1";
+                        chosenMachine.LockMachine(session1, LockType.LockType_Shared);
                         //chosenMachine.ShowConsoleWindow();
-                        IProgress progress = chosenMachine.LaunchVMProcess(new Session(), "", "");
+                        Console.WriteLine("SessionName: " + session1.Name);
+                        Console.WriteLine("SessionState: " + session1.State);
+                        //session1.UnlockMachine();
+                        IProgress progress = chosenMachine.LaunchVMProcess(session1, "gui", "");
+                        IConsole console = session1.Console;
                         Console.WriteLine(progress.Description);
                         break;
                     default:
